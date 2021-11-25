@@ -8,100 +8,153 @@ namespace Homework_Theme_03
 {
     class Program
     {
+
+        static string Name1;
+        static string Name2;
+        static int countStep;
+        static Random r;
         static void Main(string[] args)
         {
-            // Просматривая сайты по поиску работы, у вас вызывает интерес следующая вакансия:
-
-            // Требуемый опыт работы: без опыта
-            // Частичная занятость, удалённая работа
-            //
-            // Описание 
-            //
-            // Стартап «Micarosppoftle» занимающийся разработкой
-            // многопользовательских игр ищет разработчиков в свою команду.
-            // Компания готова рассмотреть C#-программистов не имеющих опыта в разработке, 
-            // но желающих развиваться в сфере разработки игр на платформе .NET.
-            //
-            // Должность Интерн C#/
-            //
-            // Основные требования:
-            // C#, операторы ввода и вывода данных, управляющие конструкции 
-            // 
-            // Конкурентным преимуществом будет знание процедурного программирования.
-            //
-            // Не технические требования: 
-            // английский на уровне понимания документации и справочных материалов
-            //
-            // В качестве тестового задания предлагается решить следующую задачу.
-            //
-            // Написать игру, в которою могут играть два игрока.
-            // При старте, игрокам предлагается ввести свои никнеймы.
-            // Никнеймы хранятся до конца игры.
-            // Программа загадывает случайное число gameNumber от 12 до 120 сообщая это число игрокам.
-            // Игроки ходят по очереди(игра сообщает о ходе текущего игрока)
-            // Игрок, ход которого указан вводит число userTry, которое может принимать значения 1, 2, 3 или 4,
-            // введенное число вычитается из gameNumber
-            // Новое значение gameNumber показывается игрокам на экране.
-            // Выигрывает тот игрок, после чьего хода gameNumber обратилась в ноль.
-            // Игра поздравляет победителя, предлагая сыграть реванш
-            // 
-            // * Бонус:
-            // Подумать над возможностью реализации разных уровней сложности.
-            // В качестве уровней сложности может выступать настраиваемое, в начале игры,
-            // значение userTry, изменение диапазона gameNumber, или указание большего количества игроков (3, 4, 5...)
-
-            // *** Сложный бонус
-            // Подумать над возможностью реализации однопользовательской игры
-            // т е игрок должен играть с компьютером
-
             
-            
+            r = new Random();
+            countStep = r.Next(12, 31);
             welcome();
-            int modeGame = select();
-            if(modweGame == 1)
-            {
+            string selectGame = "Выберите режим игры\n" +
+                "1-Однопользовательский\n" + "2-Многопользовательский\n";
+            if (selectNumber(selectGame, 1, 2) == 1)
+                SingleGame();
+            else
+                MultiGame();
+            Console.ReadKey();
+        }
 
+        static void Named(int i)
+        {
+            Console.Clear();
+            Console.Write("Введите ваше имя: ");
+            Name1 = Console.ReadLine();
+            if (i==2)
+            {
+                Console.Write("Введите имя соперника: ");
+                Name2 = Console.ReadLine();
+            }
+            else
+                Name2 = "ИИ";
+            Console.Clear();
+        }
+
+        static bool EndGame()
+        {
+            return countStep <= 0;
+        }
+
+        static void MultiGame()
+        {
+            Console.Clear();
+            Named(2);
+            bool step = true;
+            while(!EndGame())
+            {
+                Console.Clear();
+                Console.WriteLine("Количество спичек: {0}", countStep);
+                if (step)
+                {
+                    string s = Name1 + ": ";
+                    countStep -= selectNumber(s, 1, 3);
+                }
+                else
+                {
+                    string s = Name2 + ": ";
+                    countStep -= selectNumber(s, 1, 3);
+                }
+                step = !step;
+            }
+            if (step)
+            {
+                Console.Clear();
+                Console.WriteLine("Победа {0}", Name2);
             }
             else
             {
-
+                Console.Clear();
+                Console.WriteLine("Победа {0}", Name1);
             }
-            
+                
         }
 
-        void welcome()
+        static void SingleGame()
+        {
+            Console.Clear();
+            Named(1);
+            string str = "Выберите режим сложности\n1-Простой\n2-Cложный\n";
+            int level = selectNumber(str, 1, 2);
+            bool step = true;
+            while (!EndGame())
+            {
+                Console.Clear();
+                Console.WriteLine("Количество спичек: {0}", countStep);
+                if (step)
+                {
+                    string s = Name1 + ": ";
+                    countStep -= selectNumber(s, 1, 3);
+                }
+                else
+                {
+                    string s = Name2 + ": ";
+                    countStep -= II(level);
+                }
+                step = !step;
+            }
+            if (step)
+            {
+                Console.Clear();
+                Console.WriteLine("Победа {0}", Name2);
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Победа {0}", Name1);
+            }
+        }
+
+        static int II(int level)
+        {
+            if(level==1)
+                return r.Next(1, 4);
+            else
+            {
+                if (countStep % 4 == 0)
+                    return r.Next(1, 4);
+                else
+                    return countStep % 4;
+            }
+        }
+        static void welcome()
         {
             Console.WriteLine("Добро Пожаловать в игру \"Спички\"");
-            Console.WriteLine("Правила игры:/n")
-
-
+            Console.WriteLine("Правила игры:" +
+                "перед участниками N-ное количество спичек. " +
+                "Ходят по очереди.Каждый в свой черёд может взять от 1 до 3 палочек." +
+                "Выигрывает тот, кто берёт последние." +
+                "Для продоления нажите Enter");
+            Console.ReadKey();
             Console.Clear();
+
         }
 
-        int selectMode()
+        static int selectNumber(string text, int n1, int n2)
         {
-            string modeGame = "";
-            while (modeGame == "1" || modeGame=="2") 
+            Console.Write(text);
+            string stringRead = Console.ReadLine();
+            int result;
+            while (!(int.TryParse(stringRead, out result) && result >= n1 && result <= n2))
             {
-                Console.WriteLine("Выберите режим игры\n" +
-                    "1-Однопользовательский\n" +
-                    "2-Многопользовательский\n"); 
-                modeGame = Console.ReadLine();
+                Console.WriteLine("Некорректный ввод");
+                Console.Write(text);
+                stringRead = Console.ReadLine();
             }
-            Console.Clear();
-            return int.Parse(modeGame);
-        }
-
-        int cointGamer()
-        {
-            string Gamer = "";
-            while (Gamer == "1" || modeGame=="2") 
-            {
-                Console.WriteLine("Выберите количество игроков"); 
-                modeGame = Console.ReadLine();
-            }
-            Console.Clear();
-            return int.Parse(modeGame);
+            return result;
         }
     }
+        
 }
